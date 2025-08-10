@@ -1,0 +1,149 @@
+-- GUI Setup
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local SkyboxButton = Instance.new("TextButton")
+local DecalButton = Instance.new("TextButton")
+local MythicalGodsButton = Instance.new("TextButton")
+local ParticleButton = Instance.new("TextButton")
+local HintButton = Instance.new("TextButton")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+Frame.Size = UDim2.new(0, 400, 0, 350) -- taller to fit new button
+Frame.Position = UDim2.new(0.5, -200, 0.5, -175)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+Frame.Active = true
+Frame.Draggable = true
+Frame.Parent = ScreenGui
+
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Title.Text = "God Of Mythical's"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextScaled = true
+Title.Parent = Frame
+
+SkyboxButton.Size = UDim2.new(0, 150, 0, 40)
+SkyboxButton.Position = UDim2.new(0, 20, 0, 60)
+SkyboxButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+SkyboxButton.Text = "SKYBOX"
+SkyboxButton.TextColor3 = Color3.fromRGB(0, 0, 255)
+SkyboxButton.Parent = Frame
+
+DecalButton.Size = UDim2.new(0, 150, 0, 40)
+DecalButton.Position = UDim2.new(0, 20, 0, 110)
+DecalButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+DecalButton.Text = "DECAL"
+DecalButton.TextColor3 = Color3.fromRGB(0, 0, 255)
+DecalButton.Parent = Frame
+
+-- NEW Mythical Gods Button
+MythicalGodsButton.Size = UDim2.new(0, 150, 0, 40)
+MythicalGodsButton.Position = UDim2.new(0, 20, 0, 160) -- directly below Decal button
+MythicalGodsButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+MythicalGodsButton.Text = "Mythical Gods"
+MythicalGodsButton.TextColor3 = Color3.fromRGB(0, 0, 255)
+MythicalGodsButton.Parent = Frame
+
+ParticleButton.Size = UDim2.new(0, 150, 0, 40)
+ParticleButton.Position = UDim2.new(1, -170, 0, 60)
+ParticleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+ParticleButton.Text = "PARTICLE"
+ParticleButton.TextColor3 = Color3.fromRGB(0, 0, 255)
+ParticleButton.Parent = Frame
+
+HintButton.Size = UDim2.new(0, 150, 0, 40)
+HintButton.Position = UDim2.new(1, -170, 0, 110)
+HintButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+HintButton.Text = "HINT"
+HintButton.TextColor3 = Color3.fromRGB(0, 0, 255)
+HintButton.Parent = Frame
+
+-- SKYBOX BUTTON
+SkyboxButton.MouseButton1Click:Connect(function()
+    local sky = Instance.new("Sky")
+    sky.SkyboxBk = "rbxassetid://79333781733797"
+    sky.SkyboxDn = "rbxassetid://79333781733797"
+    sky.SkyboxFt = "rbxassetid://79333781733797"
+    sky.SkyboxLf = "rbxassetid://79333781733797"
+    sky.SkyboxRt = "rbxassetid://79333781733797"
+    sky.SkyboxUp = "rbxassetid://79333781733797"
+    sky.Parent = game.Lighting
+end)
+
+-- DECAL BUTTON
+DecalButton.MouseButton1Click:Connect(function()
+    local newImageId = "rbxassetid://79333781733797"
+
+    for _, obj in ipairs(game:GetDescendants()) do
+        if obj:IsA("Decal") or obj:IsA("Texture") then
+            obj.Texture = newImageId
+        elseif obj:IsA("ImageLabel") or obj:IsA("ImageButton") then
+            obj.Image = newImageId
+        end
+    end
+
+    local function exPro(root)
+        for _, v in pairs(root:GetChildren()) do
+            if v:IsA("BasePart") then
+                v.Material = Enum.Material.Plastic
+                v.Transparency = 0
+                local faces = {
+                    Enum.NormalId.Front,
+                    Enum.NormalId.Back,
+                    Enum.NormalId.Right,
+                    Enum.NormalId.Left,
+                    Enum.NormalId.Top,
+                    Enum.NormalId.Bottom
+                }
+                for _, face in ipairs(faces) do
+                    local newDecal = Instance.new("Decal", v)
+                    newDecal.Texture = "http://www.roblox.com/asset/?id=79333781733797"
+                    newDecal.Face = face
+                end
+            end
+            exPro(v)
+        end
+    end
+    exPro(game.Workspace)
+end)
+
+-- MYTHICAL GODS BUTTON
+MythicalGodsButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/wolvwe/mythicalgods/refs/heads/main/ObufscatedMoonsecv3", true))()
+end)
+
+-- PARTICLE BUTTON
+ParticleButton.MouseButton1Click:Connect(function()
+    local particleId = "rbxassetid://79333781733797"
+
+    local function applyParticle(player)
+        if player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    local p = Instance.new("ParticleEmitter")
+                    p.Texture = particleId
+                    p.Parent = part
+                end
+            end
+        end
+    end
+
+    for _, player in pairs(game.Players:GetPlayers()) do
+        applyParticle(player)
+    end
+
+    game.Players.PlayerAdded:Connect(function(player)
+        player.CharacterAdded:Connect(function()
+            applyParticle(player)
+        end)
+    end)
+end)
+
+-- HINT BUTTON
+HintButton.MouseButton1Click:Connect(function()
+    local hint = Instance.new("Hint")
+    hint.Text = "srevpx: All it Takes Is REVENGE..."
+    hint.Parent = game.Workspace
+end)
